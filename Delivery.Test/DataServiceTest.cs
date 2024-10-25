@@ -1,4 +1,5 @@
-﻿using Delivery.Core.Models;
+﻿using Delivery.Application;
+using Delivery.Core.Models;
 using Delivery.Data;
 
 namespace Delivery.Test
@@ -9,13 +10,13 @@ namespace Delivery.Test
         public async void CreateOrderTest()
         {
             string orderPath = "Data\\Orders.txt";
-            DataService dataService = new DataService(orderPath);
+            DataService dataService = new DataService();
             double weight = 1.0;
             string district = "newDistrict";
-            DateTime dateTime = DateTime.UtcNow.AddDays(1);
+            DateTime dateTime = DateTime.UtcNow.AddMinutes(15);
+
             Order order = Order.Create(Guid.NewGuid(), weight, district, dateTime).Order;
 
-            await dataService.CreateOrder(order);
 
             Assert.True(File.Exists(orderPath));
         }

@@ -18,11 +18,11 @@ namespace Delivery.Application
         public async Task<bool> Log(string message)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss "));
-            sb.AppendLine(message);
+            sb.Append(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss "));
+            sb.Append(message);
             using (var sw = new StreamWriter(LoggerPath, true))
             {
-                await sw.WriteLineAsync(message);
+                await sw.WriteLineAsync(sb.ToString());
             }
             return true;
         }
