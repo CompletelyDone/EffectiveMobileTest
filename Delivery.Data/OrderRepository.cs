@@ -57,6 +57,9 @@ namespace Delivery.Data
                     }
                 }
             }
+
+            await logger.Log("Get next deliveries");
+
             return orders;
         }
     }
