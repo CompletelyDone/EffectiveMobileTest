@@ -1,19 +1,19 @@
-﻿using Delivery.Application;
+﻿using Delivery.Core;
 using Delivery.Core.Models;
 using System.Globalization;
 using System.Text;
 
 namespace Delivery.Data
 {
-    public class OrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly ILoggerService logger;
         public OrderRepository(string ordersPath, ILoggerService logger)
         {
             if (!File.Exists(ordersPath))
             {
-                var parent = Directory.GetParent(ordersPath);
-                Directory.CreateDirectory(parent.FullName);
+                DirectoryInfo? parent = Directory.GetParent(ordersPath);
+                if (parent != null) Directory.CreateDirectory(parent.FullName);
                 File.Create(ordersPath).Dispose();
             }
             OrderPath = ordersPath;
@@ -21,8 +21,9 @@ namespace Delivery.Data
         }
         public string OrderPath { get; set; }
 
-        public async Task<Guid> CreateAsync(Order order)
+        public async Task<Guid> CreateAsync(Order? order)
         {
+            if (order == null) return Guid.Empty;
             var sb = new StringBuilder();
             sb.Append(order.Id + " ");
             sb.Append(order.Weight + " ");
@@ -51,8 +52,8 @@ namespace Delivery.Data
                     var datetime = DateTime.ParseExact(parts[3], "yyyy-MM-dd_HH:mm:ss", CultureInfo.InvariantCulture);
                     if (datetime <= deliveryTime.AddMinutes(30) && datetime >= deliveryTime)
                     {
-                        orders
-                            .Add(Order.Create(Guid.Parse(parts[0]),double.Parse(parts[1]),parts[2],datetime).Order);
+                        var order = Order.Create(Guid.Parse(parts[0]), double.Parse(parts[1]), parts[2], datetime).Order;
+                        if (order != null) orders.Add(order);
                     }
                 }
             }

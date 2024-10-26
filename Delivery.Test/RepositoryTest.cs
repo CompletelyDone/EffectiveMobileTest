@@ -18,7 +18,7 @@ namespace Delivery.Test
             string district = "newDistrict";
             double weight = rnd.Next(1, 50);
             DateTime dateTime = DateTime.UtcNow.AddMinutes(rnd.Next(-15, 45));
-            Order order = Order.Create(Guid.NewGuid(), weight, district, dateTime).Order;
+            Order? order = Order.Create(Guid.NewGuid(), weight, district, dateTime).Order;
 
             await orderRepository.CreateAsync(order);
         }

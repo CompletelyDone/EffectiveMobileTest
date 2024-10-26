@@ -1,4 +1,4 @@
-﻿namespace Delivery.Application
+﻿namespace Delivery.Core
 {
     public interface ILoggerService
     {

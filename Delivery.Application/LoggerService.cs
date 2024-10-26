@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Delivery.Core;
+using System.Text;
 
 namespace Delivery.Application
 {
@@ -8,8 +9,8 @@ namespace Delivery.Application
         {
             if (!File.Exists(loggerPath))
             {
-                var parent = Directory.GetParent(loggerPath);
-                Directory.CreateDirectory(parent.FullName);
+                DirectoryInfo? parent = Directory.GetParent(loggerPath);
+                if (parent != null) Directory.CreateDirectory(parent.FullName);
                 File.Create(loggerPath).Dispose();
             }
             LoggerPath = loggerPath;

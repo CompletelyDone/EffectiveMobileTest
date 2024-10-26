@@ -7,7 +7,7 @@ namespace Delivery.Test
     public class DataServiceTest
     {
         [Fact]
-        public async void CreateOrderTest()
+        public void CreateOrderTest()
         {
             string orderPath = "Data\\Orders.txt";
             DataService dataService = new DataService();
@@ -15,7 +15,7 @@ namespace Delivery.Test
             string district = "newDistrict";
             DateTime dateTime = DateTime.UtcNow.AddMinutes(15);
 
-            Order order = Order.Create(Guid.NewGuid(), weight, district, dateTime).Order;
+            Order? order = Order.Create(Guid.NewGuid(), weight, district, dateTime).Order;
 
 
             Assert.True(File.Exists(orderPath));
