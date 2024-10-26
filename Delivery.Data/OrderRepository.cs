@@ -59,6 +59,5 @@ namespace Delivery.Data
             }
             return orders;
         }
-
     }
 }
