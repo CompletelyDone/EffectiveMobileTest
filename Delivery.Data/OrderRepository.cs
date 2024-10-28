@@ -20,10 +20,14 @@ namespace Delivery.Data
             this.logger = logger;
         }
         public string OrderPath { get; set; }
-
         public async Task<Guid> CreateAsync(Order? order)
         {
-            if (order == null) return Guid.Empty;
+            if (order == null)
+            {
+                await logger.Log("Order is empty");
+                return Guid.Empty;
+            }
+
             var sb = new StringBuilder();
             sb.Append(order.Id + " ");
             sb.Append(order.Weight + " ");
@@ -48,17 +52,55 @@ namespace Delivery.Data
                 while ((line = await sr.ReadLineAsync()) != null)
                 {
                     var parts = line.Split(' ');
+                    if (parts.Length != 4) continue;
                     if (parts[2] != district) continue;
-                    var datetime = DateTime.ParseExact(parts[3], "yyyy-MM-dd_HH:mm:ss", CultureInfo.InvariantCulture);
+                    DateTime datetime;
+                    DateTime.TryParseExact(parts[3], "yyyy-MM-dd_HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime);
+                    if (datetime == DateTime.MinValue) continue;
                     if (datetime <= deliveryTime.AddMinutes(30) && datetime >= deliveryTime)
                     {
-                        var order = Order.Create(Guid.Parse(parts[0]), double.Parse(parts[1]), parts[2], datetime).Order;
-                        if (order != null) orders.Add(order);
+                        var (order, error) = Order.Create(Guid.Parse(parts[0]), double.Parse(parts[1]), parts[2], datetime);
+                        if (!string.IsNullOrEmpty(error) || order == null)
+                        {
+                            await logger.Log(error);
+                            continue;
+                        }
+                        orders.Add(order);
                     }
                 }
             }
 
             await logger.Log("Get next deliveries");
+
+            return orders;
+        }
+        public async Task<List<Order>> GetFilteredByDateInRangeAndByDistrict(string district, DateTime dateFrom, DateTime dateTo)
+        {
+            List<Order> orders = [];
+
+            using (StreamReader sr = new StreamReader(OrderPath))
+            {
+                string? line;
+                while ((line = await sr.ReadLineAsync()) != null)
+                {
+                    var parts = line.Split(' ');
+                    if (parts.Length != 4) continue;
+                    if (parts[2] != district) continue;
+                    DateTime datetime;
+                    DateTime.TryParseExact(parts[3], "yyyy-MM-dd_HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime);
+                    if (datetime == DateTime.MinValue) continue;
+                    if (datetime >= dateFrom && datetime <= dateTo)
+                    {
+                        var (order, error) = Order.Create(Guid.Parse(parts[0]), double.Parse(parts[1]), parts[2], datetime);
+                        if (!string.IsNullOrEmpty(error) || order == null)
+                        {
+                            await logger.Log(error);
+                            continue;
+                        }
+                        orders.Add(order);
+                    }
+                }
+            }
 
             return orders;
         }

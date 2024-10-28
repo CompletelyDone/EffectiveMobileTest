@@ -23,7 +23,6 @@
             var error = string.Empty;
             Order order;
 
-            if (deliveryTime < DateTime.UtcNow) return(null, error = "Datetime can not be less than current datetime");
             if (weight < MIN_WEIGHT) return(null, error = $"Weight can not be less than {MIN_WEIGHT}");
             if (weight > MAX_WEIGHT) return(null, error = $"Weight can not be more than {MAX_WEIGHT}");
             if (district.Length < MIN_DISTRICT_LEN) return(null, error = $"District length can not be less than {MIN_DISTRICT_LEN}");

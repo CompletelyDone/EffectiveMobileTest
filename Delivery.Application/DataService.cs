@@ -21,5 +21,10 @@ namespace Delivery.Application
         {
             return await orderRepository.GetFilteredByDistrictNext30Minutes(district, deliveryTime);
         }
+
+        public async Task<List<Order>> GetOrdersByDateInRangeAndByDistrict(string district, DateTime dateFrom, DateTime dateTo)
+        {
+            return await orderRepository.GetFilteredByDateInRangeAndByDistrict(district, dateFrom, dateTo);
+        }
     }
 }
