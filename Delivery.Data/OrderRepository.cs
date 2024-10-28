@@ -33,7 +33,10 @@ namespace Delivery.Data
             var sb = new StringBuilder();
             sb.Append(order.Id + " ");
             sb.Append(order.Weight + " ");
-            sb.Append(order.District + " ");
+            var validDistrict = new StringBuilder(order.District);
+            validDistrict.Replace(" ", "");
+            validDistrict.Append(' ');
+            sb.Append(validDistrict);
             sb.Append(order.DeliveryTime.ToString("yyyy-MM-dd_HH:mm:ss"));
 
             using (StreamWriter sw = new StreamWriter(OrderPath, true))
@@ -55,7 +58,9 @@ namespace Delivery.Data
                 {
                     var parts = line.Split(' ');
                     if (parts.Length != 4) continue;
-                    if (parts[2] != district) continue;
+                    var searchDistrict = new StringBuilder(district);
+                    searchDistrict.Replace(" ", "");
+                    if (parts[2].ToLower() != searchDistrict.ToString().ToLower()) continue;
                     DateTime datetime;
                     DateTime.TryParseExact(parts[3], "yyyy-MM-dd_HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime);
                     if (datetime == DateTime.MinValue) continue;
@@ -87,7 +92,9 @@ namespace Delivery.Data
                 {
                     var parts = line.Split(' ');
                     if (parts.Length != 4) continue;
-                    if (parts[2] != district) continue;
+                    var searchDistrict = new StringBuilder(district);
+                    searchDistrict.Replace(" ", "");
+                    if (parts[2].ToLower() != searchDistrict.ToString().ToLower()) continue;
                     DateTime datetime;
                     DateTime.TryParseExact(parts[3], "yyyy-MM-dd_HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out datetime);
                     if (datetime == DateTime.MinValue) continue;
