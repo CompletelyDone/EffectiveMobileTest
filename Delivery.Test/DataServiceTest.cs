@@ -1,6 +1,4 @@
-﻿using Delivery.Application;
-using Delivery.Core.Models;
-using Delivery.Data;
+﻿using Delivery.Core.Models;
 
 namespace Delivery.Test
 {
@@ -10,7 +8,6 @@ namespace Delivery.Test
         public void CreateOrderTest()
         {
             string orderPath = "Data\\Orders.txt";
-            DataService dataService = new DataService();
             double weight = 1.0;
             string district = "newDistrict";
             DateTime dateTime = DateTime.UtcNow.AddMinutes(15);

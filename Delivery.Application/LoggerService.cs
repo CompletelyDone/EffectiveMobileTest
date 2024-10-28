@@ -5,8 +5,10 @@ namespace Delivery.Application
 {
     public class LoggerService : ILoggerService
     {
-        public LoggerService(string loggerPath)
+        private const string DEFAULT_LOGGER_PATH = "log\\logs.txt";
+        public LoggerService(string? loggerPath)
         {
+            if (loggerPath == null) loggerPath = DEFAULT_LOGGER_PATH;
             if (!File.Exists(loggerPath))
             {
                 DirectoryInfo? parent = Directory.GetParent(loggerPath);

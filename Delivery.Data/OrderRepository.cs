@@ -7,9 +7,11 @@ namespace Delivery.Data
 {
     public class OrderRepository : IOrderRepository
     {
+        private const string DEFAULT_ORDER_PATH = "data\\orders.txt";
         private readonly ILoggerService logger;
-        public OrderRepository(string ordersPath, ILoggerService logger)
+        public OrderRepository(string? ordersPath, ILoggerService logger)
         {
+            if (ordersPath == null) ordersPath = DEFAULT_ORDER_PATH;
             if (!File.Exists(ordersPath))
             {
                 DirectoryInfo? parent = Directory.GetParent(ordersPath);
