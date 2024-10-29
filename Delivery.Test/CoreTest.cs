@@ -4,27 +4,23 @@ namespace Delivery.Test
 {
     public class CoreTest
     {
-        private Guid validId = Guid.NewGuid();
-        private double validWeight = 1;
-        private string validDistrict = "Ленинский";
-        private DateTime validDate = DateTime.UtcNow.AddMinutes(15);
         [Fact]
         public void CreateValidOrder()
         {
             var (order, error) = Order.Create(
-                validId,
-                validWeight,
-                validDistrict,
-                validDate);
+                ValidModels.Guid,
+                ValidModels.Weight,
+                ValidModels.District,
+                ValidModels.DeliveryDateTime);
 
             Assert.Multiple(() =>
             {
                 Assert.Empty(error);
                 Assert.NotNull(order);
-                Assert.Equal(validId, order.Id);
-                Assert.Equal(validWeight, order.Weight);
-                Assert.Equal(validDistrict, order.District);
-                Assert.Equal(validDate, order.DeliveryTime);
+                Assert.Equal(ValidModels.Guid, order.Id);
+                Assert.Equal(ValidModels.Weight, order.Weight);
+                Assert.Equal(ValidModels.District, order.District);
+                Assert.Equal(ValidModels.DeliveryDateTime, order.DeliveryTime);
             });
         }
         [Fact]
@@ -33,10 +29,10 @@ namespace Delivery.Test
             var invalidWeight = 0;
 
             var (order, error) = Order.Create(
-                validId,
+                ValidModels.Guid,
                 invalidWeight,
-                validDistrict,
-                validDate);
+                ValidModels.District,
+                ValidModels.DeliveryDateTime);
 
             Assert.Multiple(() =>
             {
@@ -50,10 +46,10 @@ namespace Delivery.Test
             var emptyDistrict = string.Empty;
 
             var (order, error) = Order.Create(
-                validId,
-                validWeight,
+                ValidModels.Guid,
+                ValidModels.Weight,
                 emptyDistrict,
-                validDate);
+                ValidModels.DeliveryDateTime);
 
             Assert.Multiple(() =>
             {

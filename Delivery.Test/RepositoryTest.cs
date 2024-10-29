@@ -1,5 +1,6 @@
 ﻿using Delivery.Application;
 using Delivery.Core;
+using Delivery.Core.Models;
 using Delivery.Data;
 
 namespace Delivery.Test
@@ -7,20 +8,31 @@ namespace Delivery.Test
     public class RepositoryTest
     {
         private ILoggerService loggerService = new LoggerService(null);
-        private string validOrderPath = "data\\orders.txt";
         [Fact]
-        public void OrderRepositoryCtorTest()
+        public void OrderRepositoryCtor()
         {
-            OrderRepository orderRepository = new OrderRepository(validOrderPath, loggerService);
+            OrderRepository orderRepository = new OrderRepository(ValidModels.OrderPath, loggerService);
 
-            Assert.True(File.Exists(validOrderPath));
+            Assert.True(File.Exists(ValidModels.OrderPath));
         }
         [Fact]
-        public async void OrderRepositoryCtorTest2()
+        public async void OrderRepositoryCreateAsync()
         {
-            OrderRepository orderRepository = new OrderRepository(validOrderPath, loggerService);
+            OrderRepository orderRepository = new OrderRepository(ValidModels.OrderPath, loggerService);
+            var (order, error) = Order.Create(
+                ValidModels.Guid, 
+                ValidModels.Weight,
+                ValidModels.District,
+                ValidModels.DeliveryDateTime);
 
-            orderRepository.CreateAsync();
+            await orderRepository.CreateAsync(order);
+
+            Assert.Multiple(() =>
+            {
+                Assert.NotNull(order);
+                Assert.True(File.Exists(ValidModels.OrderPath));
+                Assert.Contains($"{order.Id} {order.Weight} {order.District.Replace(" ", "")} {order.DeliveryTime.ToString("yyyy-MM-dd_HH:mm:ss")}",File.ReadAllText(ValidModels.OrderPath));
+            });
         }
     }
 }
