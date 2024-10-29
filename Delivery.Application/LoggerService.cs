@@ -5,7 +5,7 @@ namespace Delivery.Application
 {
     public class LoggerService : ILoggerService
     {
-        private const string DEFAULT_LOGGER_PATH = "log\\logs.txt";
+        public const string DEFAULT_LOGGER_PATH = "log\\logs.txt";
         public LoggerService(string? loggerPath)
         {
             if (loggerPath == null) loggerPath = DEFAULT_LOGGER_PATH;
@@ -18,7 +18,7 @@ namespace Delivery.Application
             LoggerPath = loggerPath;
         }
         public string LoggerPath { get; set; }
-        public async Task<bool> Log(string message)
+        public async Task<bool> LogAsync(string message)
         {
             var sb = new StringBuilder();
             sb.Append(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss "));

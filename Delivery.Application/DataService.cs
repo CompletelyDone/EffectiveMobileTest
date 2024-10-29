@@ -14,11 +14,11 @@ namespace Delivery.Application
         {
             return await orderRepository.CreateAsync(order);
         }
-        public async Task<List<Order>> GetNextOrdersByDistrict(string district, DateTime deliveryTime)
+        public async Task<List<Order>> GetNextOrdersByDistrictAsync(string district, DateTime deliveryTime)
         {
             return await orderRepository.GetFilteredByDistrictNext30Minutes(district, deliveryTime);
         }
-        public async Task<List<Order>> GetOrdersByDateInRangeAndByDistrict(string district, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<Order>> GetOrdersByDateInRangeAndByDistrictAsync(string district, DateTime dateFrom, DateTime dateTo)
         {
             return await orderRepository.GetFilteredByDateInRangeAndByDistrict(district, dateFrom, dateTo);
         }

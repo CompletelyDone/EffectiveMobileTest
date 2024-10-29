@@ -7,27 +7,27 @@ namespace Delivery.Data
 {
     public class OrderRepository : IOrderRepository
     {
-        private const string DEFAULT_ORDER_PATH = "data\\orders.txt";
+        public const string DEFAULT_ORDER_PATH = "data\\orders.txt";
         private readonly ILoggerService logger;
         public OrderRepository(string? ordersPath, ILoggerService logger)
         {
+            this.logger = logger;
             if (ordersPath == null) ordersPath = DEFAULT_ORDER_PATH;
             if (!File.Exists(ordersPath))
             {
                 DirectoryInfo? parent = Directory.GetParent(ordersPath);
                 if (parent != null) Directory.CreateDirectory(parent.FullName);
                 File.Create(ordersPath).Dispose();
-                logger.Log("Created file with orders").Wait();
+                logger.LogAsync("Created file with orders").Wait();
             }
             OrderPath = ordersPath;
-            this.logger = logger;
         }
         public string OrderPath { get; set; }
         public async Task<Guid> CreateAsync(Order? order)
         {
             if (order == null)
             {
-                await logger.Log("Order is empty");
+                await logger.LogAsync("Order is empty");
                 return Guid.Empty;
             }
 
@@ -45,7 +45,7 @@ namespace Delivery.Data
                 await sw.WriteLineAsync(sb.ToString());
             }
 
-            await logger.Log("Order created");
+            await logger.LogAsync("Order created");
 
             return order.Id;
         }
@@ -70,7 +70,7 @@ namespace Delivery.Data
                         var (order, error) = Order.Create(Guid.Parse(parts[0]), double.Parse(parts[1]), parts[2], datetime);
                         if (!string.IsNullOrEmpty(error) || order == null)
                         {
-                            await logger.Log(error);
+                            await logger.LogAsync(error);
                             continue;
                         }
                         orders.Add(order);
@@ -78,7 +78,7 @@ namespace Delivery.Data
                 }
             }
 
-            await logger.Log("Get next deliveries");
+            await logger.LogAsync("Get next deliveries");
 
             return orders;
         }
@@ -104,14 +104,14 @@ namespace Delivery.Data
                         var (order, error) = Order.Create(Guid.Parse(parts[0]), double.Parse(parts[1]), parts[2], datetime);
                         if (!string.IsNullOrEmpty(error) || order == null)
                         {
-                            await logger.Log(error);
+                            await logger.LogAsync(error);
                             continue;
                         }
                         orders.Add(order);
                     }
                 }
             }
-            await logger.Log("GetFilteredByDateInRangeAndByDistrict was called.");
+            await logger.LogAsync("GetFilteredByDateInRangeAndByDistrict was called.");
 
             return orders;
         }

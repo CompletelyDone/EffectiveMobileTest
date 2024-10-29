@@ -1,26 +1,26 @@
 ﻿using Delivery.Application;
-using Delivery.Core.Models;
+using Delivery.Core;
 using Delivery.Data;
 
 namespace Delivery.Test
 {
     public class RepositoryTest
     {
+        private ILoggerService loggerService = new LoggerService(null);
+        private string validOrderPath = "data\\orders.txt";
         [Fact]
-        public async void RepTest()
+        public void OrderRepositoryCtorTest()
         {
-            var loggerPath = "Data\\log.txt";
-            LoggerService loggerService = new LoggerService(loggerPath);
-            var orderPath = "Data\\Orders.txt";
-            OrderRepository orderRepository = new OrderRepository(orderPath, loggerService);
-            Random rnd = new Random();
+            OrderRepository orderRepository = new OrderRepository(validOrderPath, loggerService);
 
-            string district = "newDistrict";
-            double weight = rnd.Next(1, 50);
-            DateTime dateTime = DateTime.UtcNow.AddMinutes(rnd.Next(-15, 45));
-            Order? order = Order.Create(Guid.NewGuid(), weight, district, dateTime).Order;
+            Assert.True(File.Exists(validOrderPath));
+        }
+        [Fact]
+        public async void OrderRepositoryCtorTest2()
+        {
+            OrderRepository orderRepository = new OrderRepository(validOrderPath, loggerService);
 
-            await orderRepository.CreateAsync(order);
+            orderRepository.CreateAsync();
         }
     }
 }

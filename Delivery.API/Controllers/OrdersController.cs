@@ -21,7 +21,7 @@ namespace Delivery.API.Controllers
         {
             if (request.DeliveryTime <= DateTime.UtcNow)
             {
-                await loggerService.Log("BadRequest. Wrong delivery time.");
+                await loggerService.LogAsync("BadRequest. Wrong delivery time.");
                 return BadRequest("Неверное время доставки");
             }
             var (order, error) = Order.Create(
@@ -32,16 +32,16 @@ namespace Delivery.API.Controllers
                 );
             if (!string.IsNullOrEmpty(error) || order == null)
             {
-                await loggerService.Log("BadRequest. Order creating error.");
+                await loggerService.LogAsync("BadRequest. Order creating error.");
                 return BadRequest(error);
             }
             var orderId = await dataService.CreateOrderAsync(order);
             if(orderId.Equals(Guid.Empty))
             {
-                await loggerService.Log("BadRequest. Order creating error.");
+                await loggerService.LogAsync("BadRequest. Order creating error.");
                 return BadRequest("Ошибка создания заказа.");
             }
-            await loggerService.Log("OrderController. CreateOrder. Success.");
+            await loggerService.LogAsync("OrderController. CreateOrder. Success.");
             return Ok(orderId);
         }
         [HttpGet]
@@ -50,11 +50,11 @@ namespace Delivery.API.Controllers
         {
             if (string.IsNullOrEmpty(request.District))
             {
-                await loggerService.Log("BadRequest. GetNextDeliveries. District null or empty.");
+                await loggerService.LogAsync("BadRequest. GetNextDeliveries. District null or empty.");
                 return BadRequest("Заполнить поле район.");
             }
-            var orders = await dataService.GetNextOrdersByDistrict(request.District, request.DeliveryTime);
-            await loggerService.Log("OrderController. GetNextDeliveries. Success.");
+            var orders = await dataService.GetNextOrdersByDistrictAsync(request.District, request.DeliveryTime);
+            await loggerService.LogAsync("OrderController. GetNextDeliveries. Success.");
             return Ok(orders);
         }
         [HttpGet]
@@ -62,16 +62,16 @@ namespace Delivery.API.Controllers
         {
             if (string.IsNullOrEmpty(request.District))
             {
-                await loggerService.Log("BadRequest. GetNextDeliveries. District null or empty.");
+                await loggerService.LogAsync("BadRequest. GetNextDeliveries. District null or empty.");
                 return BadRequest("Заполнить поле район.");
             }
             if (request.DateTimeFrom > request.DateTimeTo)
             {
-                await loggerService.Log("OrderController. GetDeliveriesByDate. DeliveryTime error.");
+                await loggerService.LogAsync("OrderController. GetDeliveriesByDate. DeliveryTime error.");
                 return BadRequest("Неверно выбраны сроки доставки.");
             }
-            var orders = await dataService.GetOrdersByDateInRangeAndByDistrict(request.District, request.DateTimeFrom, request.DateTimeTo);
-            await loggerService.Log("OrderController. GetDeliveriesByDate. Success.");
+            var orders = await dataService.GetOrdersByDateInRangeAndByDistrictAsync(request.District, request.DateTimeFrom, request.DateTimeTo);
+            await loggerService.LogAsync("OrderController. GetDeliveriesByDate. Success.");
             return Ok(orders);
         }
     }
