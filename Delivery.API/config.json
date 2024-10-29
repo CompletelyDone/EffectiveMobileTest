@@ -1,2 +1,4 @@
 {
+  "OrderPath": "data\\orders.txt",
+  "LoggerPath": "log\\logs.txt"
 }

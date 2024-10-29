@@ -17,6 +17,7 @@ namespace Delivery.Data
                 DirectoryInfo? parent = Directory.GetParent(ordersPath);
                 if (parent != null) Directory.CreateDirectory(parent.FullName);
                 File.Create(ordersPath).Dispose();
+                logger.Log("Created file with orders").Wait();
             }
             OrderPath = ordersPath;
             this.logger = logger;
@@ -110,6 +111,7 @@ namespace Delivery.Data
                     }
                 }
             }
+            await logger.Log("GetFilteredByDateInRangeAndByDistrict was called.");
 
             return orders;
         }
